@@ -1,3 +1,3 @@
 <template>
-    <div>我是分类</div>
+    我是分类
 </template>

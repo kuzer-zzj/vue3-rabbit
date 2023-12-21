@@ -1,3 +1,3 @@
 <template>
-    <div>我是登录</div>
+    我是登录
 </template>
