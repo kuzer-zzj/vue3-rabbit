@@ -1,14 +1,10 @@
 <script setup>
-import{ categoryReq} from '@/api/layout'
+
 import {ref} from 'vue'
+import { useCategoryStore } from "@/stores/category";
 
-const categoryList = ref([])
+const categoryStore = useCategoryStore()
 
-const getCategoryList =async () => {
-  const res = await categoryReq()
-  categoryList.value = res.result
-}
-getCategoryList()
 </script>
 
 <template>
@@ -19,7 +15,7 @@ getCategoryList()
       </h1>
       <ul class="app-header-nav">
         <!-- <li class="home"><RouterLink to="/">首页</RouterLink></li> -->
-        <li v-for="item in categoryList" :key="item.id"><RouterLink to="/">{{ item.name }}</RouterLink></li>
+        <li v-for="item in categoryStore.categoryList" :key="item.id"><RouterLink to="/">{{ item.name }}</RouterLink></li>
       </ul>
       <div class="search">
         <i class="iconfont icon-search"></i>

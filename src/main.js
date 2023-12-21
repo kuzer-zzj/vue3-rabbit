@@ -15,10 +15,10 @@ app.use(router)
 
 app.mount('#app')
 
-console.log('请求开始');
-testGet().then((result)=>{
-    console.log(result)
-})
+// console.log('请求开始');
+// testGet().then((result)=>{
+//     console.log(result)
+// })
 
 
-console.log('请求结束');
+// console.log('请求结束');
