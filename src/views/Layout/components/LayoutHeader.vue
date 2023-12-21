@@ -1,4 +1,15 @@
-<script setup></script>
+<script setup>
+import{ categoryReq} from '@/api/layout'
+import {ref} from 'vue'
+
+const categoryList = ref([])
+
+const getCategoryList =async () => {
+  const res = await categoryReq()
+  categoryList.value = res.result
+}
+getCategoryList()
+</script>
 
 <template>
   <header class="app-header">
@@ -7,10 +18,8 @@
         <RouterLink to="/">小兔鲜</RouterLink>
       </h1>
       <ul class="app-header-nav">
-        <li class="home"><RouterLink to="/">首页</RouterLink></li>
-        <li><RouterLink to="/">居家</RouterLink></li>
-        <li><RouterLink to="/">美食</RouterLink></li>
-        <li><RouterLink to="/">服饰</RouterLink></li>
+        <!-- <li class="home"><RouterLink to="/">首页</RouterLink></li> -->
+        <li v-for="item in categoryList" :key="item.id"><RouterLink to="/">{{ item.name }}</RouterLink></li>
       </ul>
       <div class="search">
         <i class="iconfont icon-search"></i>
