@@ -1,8 +1,13 @@
 import http from "@/utils/http";
 
-export const bannerListReq =() => http({
-    url: 'home/banner'
-  })
+export const bannerListReq =(params ={}) => {
+  const {distributionSite ='1'} =params
+  return http({
+    url: 'home/banner',
+    params: {
+      distributionSite
+    }
+  })}
 
   
 export const findNewAPI =() => http({
