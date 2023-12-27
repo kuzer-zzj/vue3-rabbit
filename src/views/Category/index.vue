@@ -3,16 +3,22 @@ import { getTopCategoryAPI } from "@/api/category";
 import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import { bannerListReq } from "@/api/home";
-console.log("我是分类。。11。");
+import GoodsItem from "@/views/Home/components/GoodsItem.vue";
+import {onBeforeRouteUpdate}  from 'vue-router'
+
+
 const categoryData = ref({});
 const route = useRoute();
-const getCategory = async () => {
-  const res = await getTopCategoryAPI(route.params.id);
+const getCategory = async (id=route.params.id) => {
+  const res = await getTopCategoryAPI(id);
   categoryData.value = res.result;
 };
 
 onMounted(() => getCategory());
-console.log("我是分类。。。");
+
+onBeforeRouteUpdate((to) =>{
+  getCategory(to.params.id);
+})
 
 const bannerList = ref([]);
 
@@ -36,13 +42,37 @@ onMounted(() => getBannerList());
           <el-breadcrumb-item>{{ categoryData.name }}</el-breadcrumb-item>
         </el-breadcrumb>
       </div>
-    </div>
-    <div class="home-banner">
-      <el-carousel height="500px">
-        <el-carousel-item v-for="item in bannerList" :key="item.id">
-          <img :src="item.imgUrl" alt="" />
-        </el-carousel-item>
-      </el-carousel>
+
+      <div class="home-banner">
+        <el-carousel height="500px">
+          <el-carousel-item v-for="item in bannerList" :key="item.id">
+            <img :src="item.imgUrl" alt="" />
+          </el-carousel-item>
+        </el-carousel>
+      </div>
+      <div class="sub-list">
+        <h3>全部分类</h3>
+        <ul>
+          <li v-for="i in categoryData.children" :key="i.id">
+            <RouterLink to="/">
+              <img :src="i.picture" />
+              <p>{{ i.name }}</p>
+            </RouterLink>
+          </li>
+        </ul>
+      </div>
+      <div
+        class="ref-goods"
+        v-for="item in categoryData.children"
+        :key="item.id"
+      >
+        <div class="head">
+          <h3>- {{ item.name }}-</h3>
+        </div>
+        <div class="body">
+          <GoodsItem v-for="good in item.goods" :good="good" :key="good.id" />
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -91,15 +121,6 @@ onMounted(() => getBannerList());
       }
     }
   }
-  .home-banner {
-    width: 1240px;
-    height: 500px;
-    margin: 0 auto;
-    img {
-      width: 100%;
-      height: 500px;
-    }
-  }
 
   .ref-goods {
     background-color: #fff;
@@ -131,6 +152,17 @@ onMounted(() => getBannerList());
 
   .bread-container {
     padding: 25px 0;
+  }
+}
+
+.home-banner {
+  width: 1240px;
+  height: 500px;
+  margin: 0 auto;
+
+  img {
+    width: 100%;
+    height: 500px;
   }
 }
 </style>
