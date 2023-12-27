@@ -17,7 +17,7 @@ tryOnMounted(() => getNewList());
     <ul class="goods-list">
       <li v-for="item in hotList" :key="item.id">
         <RouterLink :to="`/detail/${item.id}`">
-          <img :src="item.picture" alt="" />
+          <img v-img-load="item.picture"  alt="" />
           <p class="name">{{ item.title }}</p>
           <p class="desc">{{ item.alt }}</p>
         </RouterLink>
