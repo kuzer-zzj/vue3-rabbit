@@ -14,6 +14,7 @@ const getCategoryFilter = async () => {
 onMounted(() => getCategoryFilter());
 
 const goodsItems = ref([]);
+const disable = ref(false);
 const req = ref({
   categoryId: route.params.id,
   page: 1,
@@ -30,7 +31,19 @@ onMounted(() => getSubCategory());
 
 const tabChange= ()=>{
   req.value.page=1;
-  getSubCategory();
+  getSubCategory(req);
+}
+
+const loadData = async ()=>{
+  console.log('loadData....');
+  req.value.page+=1;
+  const res =await getSubCategoryAPI(req.value)
+  if(res.result.items.length <1){
+    disable.value = true;
+    return ;
+  }
+  goodsItems.value =[...goodsItems.value,...res.result.items] ;
+  console.log('goodsItems.value=',goodsItems.value);
 }
 </script>
 
@@ -49,11 +62,11 @@ const tabChange= ()=>{
     </div>
     <div class="sub-container">
       <el-tabs v-model="req.sortField"  @tab-change="tabChange">
-        <el-tab-pane label="最新商品" name="publishTime">User</el-tab-pane>
-        <el-tab-pane label="最高人气" name="orderNum">Config</el-tab-pane>
-        <el-tab-pane label="评论最多" name="evaluateNum">Role</el-tab-pane>
+        <el-tab-pane label="最新商品" name="publishTime"></el-tab-pane>
+        <el-tab-pane label="最高人气" name="orderNum"></el-tab-pane>
+        <el-tab-pane label="评论最多" name="evaluateNum"></el-tab-pane>
       </el-tabs>
-      <div class="body">
+      <div class="body" v-infinite-scroll="loadData" :infinite-scroll-disabled="disable">
         <GoodsItem v-for="good in goodsItems" :key="good.id" :good="good"></GoodsItem>
       </div>
     </div>
