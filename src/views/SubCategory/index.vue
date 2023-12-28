@@ -22,17 +22,22 @@ const req = ref({
 });
 
 const getSubCategory = async () => {
-  const res =await getSubCategoryAPI(req)
+  const res =await getSubCategoryAPI(req.value)
   goodsItems.value = res.result.items;
 }
 
 onMounted(() => getSubCategory());
+
+const tabChange= ()=>{
+  req.value.page=1;
+  getSubCategory();
+}
 </script>
 
 <template>
   <div class="container">
     <div class="bread-container">
-      <el-breadcrumb separator="/">
+      <el-breadcrumb separator=">">
         <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
 
         <el-breadcrumb-item
@@ -43,7 +48,7 @@ onMounted(() => getSubCategory());
       </el-breadcrumb>
     </div>
     <div class="sub-container">
-      <el-tabs>
+      <el-tabs v-model="req.sortField"  @tab-change="tabChange">
         <el-tab-pane label="最新商品" name="publishTime">User</el-tab-pane>
         <el-tab-pane label="最高人气" name="orderNum">Config</el-tab-pane>
         <el-tab-pane label="评论最多" name="evaluateNum">Role</el-tab-pane>
