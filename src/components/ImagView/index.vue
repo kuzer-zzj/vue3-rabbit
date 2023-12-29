@@ -21,6 +21,9 @@ const { elementX, elementY, isOutside } = useMouseInElement(target)
 
 const pointLeft = ref(0)
 const pointTop = ref(0)
+
+const imgPositionX = ref(0)
+const imgPositionY = ref(0)
 watch([ elementX, elementY, isOutside] ,()=>{
   console.log('鼠标移入图片位置变动！',isOutside.value);
   //蒙层位置
@@ -38,9 +41,11 @@ watch([ elementX, elementY, isOutside] ,()=>{
   if(elementX.value <=100){pointLeft.value=0}
   if(elementX.value >=300){pointLeft.value=200}
 
-  if (elementY.value > 300) { top.value = 200 }
-  if (elementY.value < 100) { top.value = 0 }
+  if (elementY.value > 300) { pointTop.value = 200 }
+  if (elementY.value < 100) { pointTop.value = 0 }
 
+  imgPositionX.value =-pointLeft.value*2
+  imgPositionY.value =-pointTop.value*2
 
 })
 </script>
@@ -49,7 +54,7 @@ watch([ elementX, elementY, isOutside] ,()=>{
   <div class="goods-image">
     <div class="middle" ref="target">
       <img :src="imageList[activeIndex]" alt="" />
-      <div class="layer" :style="{left : `${pointLeft}px` , top : `${pointTop}px`}"></div>
+      <div class="layer" v-show="!isOutside" :style="{left : `${pointLeft}px` , top : `${pointTop}px`}"></div>
     </div>
 
     <ul class="small">
@@ -58,7 +63,11 @@ watch([ elementX, elementY, isOutside] ,()=>{
       </li>
     </ul>
 
-    <div class="large" ></div>
+    <div class="large" :style="{
+      backgroundImage: `url(${imageList[activeIndex]})`,
+      backgroundPositionX: `${imgPositionX}px`,
+      backgroundPositionY: `${imgPositionY}px`
+    }" v-show="!isOutside" ></div>
   </div>
 </template>
 
@@ -72,6 +81,20 @@ watch([ elementX, elementY, isOutside] ,()=>{
     width: 400px;
     height: 400px;
     background: #f5f5f5;
+  }
+
+  .large{
+    position: absolute;
+    top: 0;
+    left: 400px;
+    width: 400px;
+    height: 400px;
+    z-index: 500;
+    box-shadow: 0 0 10px rgba(0,0,0,.1);
+    background-repeat: no-repeat;
+    background-size: 800px 800px;
+    background-color: #f8f8f8;
+
   }
   .layer{
     width: 200px;
