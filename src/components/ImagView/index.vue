@@ -1,5 +1,6 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
+import { useMouseInElement } from '@vueuse/core'
 // 图片列表
 const imageList = [
   "https://yanxuan-item.nosdn.127.net/d917c92e663c5ed0bb577c7ded73e4ec.png",
@@ -13,13 +14,42 @@ const mouseenterHandler = (i) => {
   console.log('鼠标移入图片下标：',i);
   activeIndex.value = i;
 }
+
+const target = ref(null)
+
+const { elementX, elementY, isOutside } = useMouseInElement(target)
+
+const pointLeft = ref(0)
+const pointTop = ref(0)
+watch([ elementX, elementY, isOutside] ,()=>{
+  console.log('鼠标移入图片位置变动！',isOutside.value);
+  //蒙层位置
+  if(isOutside.value) return
+
+  //控制蒙层滑动距离
+  if(elementX.value >100 && elementX.value <300 ){
+    pointLeft.value= elementX.value -100
+  }
+  if(elementY.value >100 && elementY.value <300){
+    pointTop.value=elementY.value -100
+  }
+
+  //边界处理
+  if(elementX.value <=100){pointLeft.value=0}
+  if(elementX.value >=300){pointLeft.value=200}
+
+  if (elementY.value > 300) { top.value = 200 }
+  if (elementY.value < 100) { top.value = 0 }
+
+
+})
 </script>
 
 <template>
   <div class="goods-image">
-    <div class="middle">
+    <div class="middle" ref="target">
       <img :src="imageList[activeIndex]" alt="" />
-      <div class="layer" ></div>
+      <div class="layer" :style="{left : `${pointLeft}px` , top : `${pointTop}px`}"></div>
     </div>
 
     <ul class="small">
