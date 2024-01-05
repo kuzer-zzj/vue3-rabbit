@@ -1,14 +1,20 @@
 import { ref } from "vue";
 import { defineStore } from "pinia";
-import {loginAPI} from '@/api/user'
+import { loginAPI } from "@/api/user";
 
-export const useUserStore = defineStore("user", () => {
-  const userInfo = ref({});
+export const useUserStore = defineStore(
+  "user",
+  () => {
+    const userInfo = ref({});
 
-  const getUserInfo = async ({account,password}) => {
-    const res = await loginAPI({account,password});
-    userInfo.value = res.result;
-  };
+    const getUserInfo = async ({ account, password }) => {
+      const res = await loginAPI({ account, password });
+      userInfo.value = res.result;
+    };
 
-  return { userInfo, getUserInfo };
-});
+    return { userInfo, getUserInfo };
+  },
+  {
+    persist: true,
+  }
+);
