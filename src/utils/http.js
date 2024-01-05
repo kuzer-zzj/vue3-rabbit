@@ -21,6 +21,18 @@ http.interceptors.request.use(config => {
 
 // axios响应式拦截器
 http.interceptors.response.use(res => res.data, e => {
+ 
+  const code = e.response.status
+  if (code === 401) {
+    const userStore = useUserStore()
+    
+    userStore.clearUserInfo()
+    //router.push('/login')
+    location.href = '/login'
+    //router.push({path:'/login'})
+   // location.reload()
+  }
+
   ElMessage.error(e.response.data.message)
   return Promise.reject(e)
 })
