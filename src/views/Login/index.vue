@@ -28,6 +28,18 @@ const rules ={
   ]
 }
 
+const formData =ref(null)
+const submitForm = () => {
+  formData.value.validate((valid) => {
+    if (valid) {
+      console.log('submit!')
+    } else {
+      console.log('error submit!!')
+      return false
+    }
+  })
+}
+
 </script>
 
 <template>
@@ -51,7 +63,7 @@ const rules ={
       </nav>
       <div class="account-box">
         <div class="form">
-          <el-form :model="form" :rules="rules" label-position="right" label-width="60px" status-icon>
+          <el-form :model="form" ref="formData" :rules="rules" label-position="right" label-width="60px" status-icon>
             <el-form-item label="账户" prop="username">
               <el-input v-model="form.username" />
             </el-form-item>
@@ -63,7 +75,7 @@ const rules ={
                 我已同意隐私条款和服务条款
               </el-checkbox>
             </el-form-item>
-            <el-button size="large" class="subBtn">点击登录</el-button>
+            <el-button size="large" class="subBtn" @click="submitForm">点击登录</el-button>
           </el-form>
         </div>
       </div>
