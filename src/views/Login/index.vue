@@ -1,14 +1,14 @@
 <script setup>
 import {ref} from 'vue'
-import {loginAPI} from '@/api/user'
+import {useUserStore} from '@/stores/user'
 import {useRouter} from 'vue-router'
 import { ElMessage } from 'element-plus'
 import 'element-plus/theme-chalk/el-message.css'
 
 const router = useRouter()
 const form =ref({
-  username:'',
-  password:'',
+  username:'xiaotuxian001',
+  password:'123456',
   agree: true
 })
 
@@ -39,8 +39,7 @@ const submitForm = () => {
     if (valid) {
       console.log('submit!')
       const {username,password} = form.value
-      await loginAPI({account:username,password})
-
+      await useUserStore().getUserInfo({account:username,password})
       router.replace('/')
       ElMessage.success('登录成功')
     } else {
