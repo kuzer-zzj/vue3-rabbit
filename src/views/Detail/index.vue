@@ -5,15 +5,22 @@ import {onMounted, ref} from 'vue'
 import DetailHot from './components/DetailHot.vue'
 import { ElMessage } from 'element-plus';
 import {useCartStore} from '@/stores/cart'
+import {onBeforeRouteUpdate}  from 'vue-router'
+
 
 const route = useRoute()
 const goods = ref({})
-const getDetailData = async () => {
-  const res = await getDetail(route.params.id)
+
+const getDetailData = async (id = route.params.id) => {
+  const res = await getDetail(id)
   goods.value = res.result
 }
 onMounted(() => {
   getDetailData()
+})
+
+onBeforeRouteUpdate((to) =>{
+  getDetailData(to.params.id);
 })
 
 let skuObj={}

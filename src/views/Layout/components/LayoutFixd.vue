@@ -1,6 +1,7 @@
 <script setup>
 import {useScroll} from '@vueuse/core'
 import { useCategoryStore } from "@/stores/category";
+import HeaderCart from './HeaderCart.vue'
 
 const categoryStore = useCategoryStore()
 
@@ -23,6 +24,7 @@ const {y} = useScroll(window)
         <RouterLink to="/">品牌</RouterLink>
         <RouterLink to="/">专题</RouterLink>
       </div>
+      <HeaderCart />
     </div>
   </div>
 </template>
