@@ -1,8 +1,16 @@
 <script setup>
-import {useCartStore} from '@/stores/cart'
-const cartStore = useCartStore()
+import { useCartStore } from "@/stores/cart";
+const cartStore = useCartStore();
 
-const cartList = cartStore.cartList
+const cartList = cartStore.cartList;
+
+const singleCheck = (i,select) => {
+  console.log(select);
+  cartStore.singleCheck(i.skuId,select)
+};
+const changeAllCheck =(select)=>{
+    cartStore.allCheck(select)
+}
 </script>
 
 <template>
@@ -13,7 +21,7 @@ const cartList = cartStore.cartList
           <thead>
             <tr>
               <th width="120">
-                <el-checkbox/>
+                <el-checkbox :model-value="cartStore.isAllChecked" @change="changeAllCheck"/>
               </th>
               <th width="400">商品信息</th>
               <th width="220">单价</th>
@@ -26,11 +34,13 @@ const cartList = cartStore.cartList
           <tbody>
             <tr v-for="i in cartList" :key="i.id">
               <td>
-                <el-checkbox />
+                <el-checkbox :model-value="i.selected" @change="(select)=> singleCheck(i,select)" />
               </td>
               <td>
                 <div class="goods">
-                  <RouterLink :to="`/detail/${i.id}`"><img :src="i.picture" alt="" /></RouterLink>
+                  <RouterLink :to="`/detail/${i.id}`"
+                    ><img :src="i.picture" alt=""
+                  /></RouterLink>
                   <div>
                     <p class="name ellipsis">
                       {{ i.name }}
@@ -49,7 +59,12 @@ const cartList = cartStore.cartList
               </td>
               <td class="tc">
                 <p>
-                  <el-popconfirm title="确认删除吗?" confirm-button-text="确认" cancel-button-text="取消" @confirm="cartStore.delCart(i.skuId)">
+                  <el-popconfirm
+                    title="确认删除吗?"
+                    confirm-button-text="确认"
+                    cancel-button-text="取消"
+                    @confirm="cartStore.delCart(i.skuId)"
+                  >
                     <template #reference>
                       <a href="javascript:;">删除</a>
                     </template>
@@ -61,13 +76,14 @@ const cartList = cartStore.cartList
               <td colspan="6">
                 <div class="cart-none">
                   <el-empty description="购物车列表为空">
-                    <el-button type="primary" @click="$router.push('/')">随便逛逛</el-button>
+                    <el-button type="primary" @click="$router.push('/')"
+                      >随便逛逛</el-button
+                    >
                   </el-empty>
                 </div>
               </td>
             </tr>
           </tbody>
-
         </table>
       </div>
       <!-- 操作栏 -->
@@ -77,7 +93,7 @@ const cartList = cartStore.cartList
           <span class="red">¥ 200.00 </span>
         </div>
         <div class="total">
-          <el-button size="large" type="primary" >下单结算</el-button>
+          <el-button size="large" type="primary">下单结算</el-button>
         </div>
       </div>
     </div>
@@ -162,7 +178,7 @@ const cartList = cartStore.cartList
       height: 100px;
     }
 
-    >div {
+    > div {
       width: 280px;
       font-size: 16px;
       padding-left: 10px;
@@ -207,6 +223,5 @@ const cartList = cartStore.cartList
     font-weight: normal;
     line-height: 50px;
   }
-
 }
 </style>

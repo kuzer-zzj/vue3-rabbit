@@ -28,8 +28,18 @@ export const useCartStore = defineStore(
       return cartList.value.reduce((p,c) => p +  c.count,0)
     
    })
+   const isAllChecked = computed(()=> cartList.value.every(x => x.selected))
 
-    return { cartList,totalPrice,totalCount, addToCart,delCart };
+   const singleCheck =(skuId,isChecked)=>{
+    cartList.value.find(x => x.skuId === skuId).selected = isChecked
+   }
+
+   const allCheck =(isChecked)=>{
+    cartList.value.forEach(x => x.selected = isChecked)
+   }
+
+    return { cartList,totalPrice,totalCount,isAllChecked,
+       addToCart,delCart,singleCheck,allCheck };
   },
   {
     persist: true,
