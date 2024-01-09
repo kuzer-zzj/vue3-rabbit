@@ -1,9 +1,14 @@
 <script setup>
 import { getCheckoutInfoAPI } from "@/api/order";
 import { onMounted, ref } from "vue";
+import { createOrderAPI } from "@/api/order";
+import { useRouter } from "vue-router";
+import { useCartStore } from "@/stores/cart";
+
 const checkInfo = ref({}); // 订单对象
 const curAddress = ref({}); // 地址对象
-
+const router = useRouter();
+const cartStore = useCartStore();
 const getCheckoutInfo = async () => {
   const res = await getCheckoutInfoAPI();
   checkInfo.value = res.result;
@@ -14,18 +19,39 @@ const getCheckoutInfo = async () => {
 };
 onMounted(() => getCheckoutInfo());
 
-const toggleFlag =ref(false);
+const toggleFlag = ref(false);
 
-const activeAddr = ref({})
+const activeAddr = ref({});
 const changeAddress = (item) => {
-  activeAddr.value =item
-}
+  activeAddr.value = item;
+};
 
-const comfirmAddr =()=>{
-  toggleFlag.value = false
-  curAddress.value = activeAddr.value
-}
+const comfirmAddr = () => {
+  toggleFlag.value = false;
+  curAddress.value = activeAddr.value;
+};
 
+const subOrder = async () => {
+  const res = await createOrderAPI({
+    deliveryTimeType: 1,
+    payType: 1,
+    payChannel: 1,
+    buyerMessage: "",
+    goods: checkInfo.value.goods.map((item) => {
+      return {
+        skuId: item.skuId,
+        count: item.count,
+      };
+    }),
+    addressId: curAddress.value.id,
+  });
+
+  const orderId = res.result.id;
+  console.log("订单提交成功！", orderId);
+  router.push(`/pay?orderId=${orderId}`);
+
+  cartStore.getNewCartList();
+};
 </script>
 
 <template>
@@ -135,7 +161,9 @@ const comfirmAddr =()=>{
         </div>
         <!-- 提交订单 -->
         <div class="submit">
-          <el-button type="primary" size="large">提交订单</el-button>
+          <el-button type="primary" size="large" @click="subOrder"
+            >提交订单</el-button
+          >
         </div>
       </div>
     </div>
@@ -145,7 +173,7 @@ const comfirmAddr =()=>{
     <div class="addressWrapper">
       <div
         class="text item"
-        :class="{active: activeAddr.id === item.id}"
+        :class="{ active: activeAddr.id === item.id }"
         v-for="item in checkInfo.userAddresses"
         :key="item.id"
         @click="changeAddress(item)"
@@ -153,7 +181,8 @@ const comfirmAddr =()=>{
         <ul>
           <li>
             <span>收<i />货<i />人：</span>{{ item.receiver }}
-          </li>``
+          </li>
+          ``
           <li><span>联系方式：</span>{{ item.contact }}</li>
           <li><span>收货地址：</span>{{ item.fullLocation + item.address }}</li>
         </ul>
@@ -161,7 +190,7 @@ const comfirmAddr =()=>{
     </div>
     <template #footer>
       <span class="dialog-footer">
-        <el-button @click="toggleFlag = false" >取消</el-button>
+        <el-button @click="toggleFlag = false">取消</el-button>
         <el-button type="primary" @click="comfirmAddr">确定</el-button>
       </span>
     </template>
